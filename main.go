@@ -21,15 +21,16 @@ func main() {
 		Example: `  
   Directly convert a input value from a template
   
-  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="a" -> "a"
- 
+  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" --raw # hello world
+
   Using Sprig functions
 
-  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" a "
+  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" a " --raw # hello world
 
   Convert input to a integer and use math
 
-  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1"
+  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" --raw # 2
+
 		`,
 		Args: cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
