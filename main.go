@@ -25,7 +25,7 @@ func main() {
 
   Using Sprig functions
 
-  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" a " --raw # hello world
+  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" hello world " --raw # hello world
 
   Convert input to a integer and use math
 
