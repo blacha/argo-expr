@@ -1,4 +1,4 @@
-module blacha/argo-expr
+module github.com/blacha/argo-expr
 
 go 1.18
 
