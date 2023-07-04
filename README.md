@@ -37,7 +37,7 @@ output:
 ### Create a sha256sum raw string
 
 ```bash
-./argo-expr '{{=sprig.sha256sum("hello world")}}'
+argo-expr '{{=sprig.sha256sum("hello world")}}'
 ```
 
 output:
@@ -52,7 +52,7 @@ output:
 ### create a sha256sum hash from a input value
 
 ```bash
-./argo-expr '{{=sprig.sha256sum(input.value)}}' --value input.value="hello world"
+argo-expr '{{=sprig.sha256sum(input.value)}}' --value input.value="hello world"
 ```
 
 output
