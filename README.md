@@ -62,3 +62,49 @@ output
   "result": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
   "values": {}
 }
+```
+
+### load from file
+
+input.json
+
+```json 
+{
+    "input": "hello world 1+1:{{=1+1}} i:{{=i}}",
+    "values": {
+        "i": "4"
+    }
+}
+```
+
+```bash
+argo-expr --from-file ./input.json
+```
+
+output
+```
+hello world 1+1:2 i:4
+```
+
+
+#### Values can be overridden
+
+```bash
+argo-expr --from-file ./input.json --value i=1
+```
+
+output
+```
+hello world 1+1:2 i:2
+```
+
+#### Input expression can be overriden
+```bash
+argo-expr --from-file ./input.json "i:{{=i+3}}"
+```
+
+output
+
+```
+
+```

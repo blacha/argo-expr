@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/argoproj/argo-workflows/v3/util/template"
@@ -10,8 +11,14 @@ import (
 	"golang.org/x/exp/maps"
 )
 
+type InputJson struct {
+	Input  string            `json:"input"`
+	Values map[string]string `json:"values"`
+}
+
 func main() {
 	var var_map map[string]string
+	var from_file string
 	var output_to_json bool
 
 	rootCmd := &cobra.Command{
@@ -32,11 +39,41 @@ func main() {
   $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" # 2
 
 		`,
-		Args: cobra.ExactArgs(1),
+		Args: cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			input_template := args[0]
 			// Preload the argo replacements
 			base_map := map[string]string{}
+			var input_template string
+
+			if from_file != "" && input_template != "" {
+				panic("Cannot use --from-file and input together")
+			}
+
+			if from_file != "" {
+				jsonFile, err := os.Open(from_file)
+				if err != nil {
+					panic(err)
+				}
+				defer jsonFile.Close()
+
+				byteValue, _ := ioutil.ReadAll(jsonFile)
+				var jsonInputData InputJson
+				json.Unmarshal(byteValue, &jsonInputData)
+
+				if jsonInputData.Input != "" {
+					input_template = jsonInputData.Input
+				}
+				if jsonInputData.Values != nil {
+					maps.Copy(base_map, jsonInputData.Values)
+				}
+			}
+
+			if len(args) > 0 {
+				if input_template != "" {
+					fmt.Fprintf(os.Stderr, "Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
+				}
+				input_template = args[0]
+			}
 
 			// inject all of the --value parameters into the argo replacements
 			maps.Copy(base_map, var_map)
@@ -56,6 +93,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+
 			var replaced_data map[string]interface{}
 			err = json.Unmarshal([]byte(s), &replaced_data)
 			if err != nil {
@@ -80,6 +118,7 @@ func main() {
 	}
 	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
 	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "output as a JSON object")
+	rootCmd.Flags().StringVarP(&from_file, "from-file", "f", "", "load parameters from a file")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
