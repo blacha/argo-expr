@@ -11,7 +11,7 @@ This CLI provides a way to test the expressions before submitting the workflow t
 ## Installation
 
 ```bash
-go install https://github.com/blacha/argo-expr
+go install github.com/blacha/argo-expr@latest
 ```
 
 ## Usage
