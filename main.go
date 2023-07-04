@@ -12,6 +12,7 @@ import (
 
 func main() {
 	var var_map map[string]string
+	var raw bool
 
 	rootCmd := &cobra.Command{
 		Use:   "argo-expr",
@@ -41,7 +42,7 @@ func main() {
 
 			// Convert the template into a JSON object so it can be used by argo
 			template_raw := map[string]string{
-				"value": input_template,
+				"result": input_template,
 			}
 
 			template_json, err := json.Marshal(template_raw)
@@ -54,12 +55,31 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			var replaced_data map[string]interface{}
+			err = json.Unmarshal([]byte(s), &replaced_data)
+			if err != nil {
+				panic(err)
+			}
 
-			// Output the result to stdout
-			fmt.Println(s)
+			if raw {
+				fmt.Println(replaced_data["result"])
+				return
+			}
+
+			output_json := map[string]interface{}{
+				"input":  input_template,
+				"values": base_map,
+				"result": replaced_data["result"],
+			}
+			output, err := json.Marshal(output_json)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(string(output))
 		},
 	}
 	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
+	rootCmd.Flags().BoolVarP(&raw, "raw", "r", false, "output only the raw value")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
