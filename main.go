@@ -12,7 +12,7 @@ import (
 
 func main() {
 	var var_map map[string]string
-	var raw bool
+	var output_to_json bool
 
 	rootCmd := &cobra.Command{
 		Use:   "argo-expr",
@@ -21,15 +21,15 @@ func main() {
 		Example: `  
   Directly convert a input value from a template
   
-  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" --raw # hello world
+  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" # hello world
 
   Using Sprig functions
 
-  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" hello world " --raw # hello world
+  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" hello world " # hello world
 
   Convert input to a integer and use math
 
-  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" --raw # 2
+  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" # 2
 
 		`,
 		Args: cobra.ExactArgs(1),
@@ -62,25 +62,24 @@ func main() {
 				panic(err)
 			}
 
-			if raw {
-				fmt.Println(replaced_data["result"])
+			if output_to_json {
+				output_json := map[string]interface{}{
+					"input":  input_template,
+					"values": base_map,
+					"result": replaced_data["result"],
+				}
+				output, err := json.Marshal(output_json)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(string(output))
 				return
 			}
-
-			output_json := map[string]interface{}{
-				"input":  input_template,
-				"values": base_map,
-				"result": replaced_data["result"],
-			}
-			output, err := json.Marshal(output_json)
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(string(output))
+			fmt.Println(replaced_data["result"])
 		},
 	}
 	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
-	rootCmd.Flags().BoolVarP(&raw, "raw", "r", false, "output only the raw value")
+	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "output as a JSON object")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

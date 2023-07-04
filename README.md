@@ -1,7 +1,7 @@
 # Argo workflows expression tester
 
 
-[Argo]() has a complex [expression language](https://argoproj.github.io/argo-workflows/variables/#expression) to modify parameters in its workflows
+[Argo](https://github.com/argoproj/argo-workflows) has a complex [expression language](https://argoproj.github.io/argo-workflows/variables/#expression) to modify parameters in its workflows
 
 It is difficult for a go novice to figure out how these work.
 
@@ -19,7 +19,7 @@ go install github.com/blacha/argo-expr@latest
 ### simple math
 
 ```bash
-argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1"
+argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" --json
 ```
 
 output:
@@ -37,7 +37,7 @@ output:
 ### Create a sha256sum raw string
 
 ```bash
-argo-expr '{{=sprig.sha256sum("hello world")}}'
+argo-expr '{{=sprig.sha256sum("hello world")}}' --json
 ```
 
 output:
@@ -52,7 +52,7 @@ output:
 ### create a sha256sum hash from a input value
 
 ```bash
-argo-expr '{{=sprig.sha256sum(input.value)}}' --value input.value="hello world"
+argo-expr '{{=sprig.sha256sum(input.value)}}' --value input.value="hello world" --json
 ```
 
 output
