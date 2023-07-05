@@ -89,9 +89,10 @@ func main() {
 			}
 
 			// Replace the values in the template
-			s, err := template.Replace(string(template_json), base_map, true)
+			s, err := template.Replace(string(template_json), base_map, false)
 			if err != nil {
-				panic(err)
+				fmt.Println(err.Error())
+				os.Exit(1)
 			}
 
 			var replaced_data map[string]interface{}
