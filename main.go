@@ -20,6 +20,7 @@ func main() {
 	var var_map map[string]string
 	var from_file string
 	var output_to_json bool
+	var quiet bool
 
 	rootCmd := &cobra.Command{
 		Use:   "argo-expr",
@@ -70,7 +71,9 @@ func main() {
 
 			if len(args) > 0 {
 				if input_template != "" {
-					fmt.Fprintf(os.Stderr, "Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
+					if !quiet {
+						fmt.Fprintf(os.Stderr, "Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
+					}
 				}
 				input_template = args[0]
 			}
@@ -118,8 +121,9 @@ func main() {
 		},
 	}
 	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
-	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "output as a JSON object")
-	rootCmd.Flags().StringVarP(&from_file, "from-file", "f", "", "load parameters from a file")
+	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "Output as a JSON object")
+	rootCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Do not print messages to stderr")
+	rootCmd.Flags().StringVarP(&from_file, "from-file", "f", "", "Load parameters from a file")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
