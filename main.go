@@ -13,8 +13,8 @@ import (
 )
 
 type InputJson struct {
-	Input  string            `json:"input"`
-	Values map[string]string `json:"values"`
+	Template string            `json:"template"`
+	Values   map[string]string `json:"values"`
 }
 
 var Version string
@@ -37,7 +37,7 @@ func init_version() {
 
 func create_command() *cobra.Command {
 
-	var var_map map[string]string
+	var values map[string]string
 	var from_file string
 	var output_to_json bool
 	var quiet bool
@@ -61,7 +61,7 @@ Examples:
 		Args: cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			// Preload the argo replacements
-			base_map := map[string]string{}
+			replacement_map := map[string]string{}
 			var input_template string
 
 			if from_file != "" {
@@ -75,23 +75,23 @@ Examples:
 				var jsonInputData InputJson
 				json.Unmarshal(byteValue, &jsonInputData)
 
-				if jsonInputData.Input != "" {
-					input_template = jsonInputData.Input
+				if jsonInputData.Template != "" {
+					input_template = jsonInputData.Template
 				}
 				if jsonInputData.Values != nil {
-					maps.Copy(base_map, jsonInputData.Values)
+					maps.Copy(replacement_map, jsonInputData.Values)
 				}
 			}
 
 			if len(args) > 0 {
 				if !quiet && input_template != "" {
-					cmd.PrintErrf("Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
+					cmd.PrintErrf("Replacing template from:'%s' to:'%s'\n", input_template, args[0])
 				}
 				input_template = args[0]
 			}
 
 			// inject all of the --value parameters into the argo replacements
-			maps.Copy(base_map, var_map)
+			maps.Copy(replacement_map, values)
 
 			// Convert the template into a JSON object so it can be used by argo
 			template_raw := map[string]string{
@@ -104,7 +104,7 @@ Examples:
 			}
 
 			// Replace the values in the template
-			s, err := template.Replace(string(template_json), base_map, false)
+			s, err := template.Replace(string(template_json), replacement_map, false)
 			if err != nil {
 				cmd.Println(err.Error())
 				os.Exit(1)
@@ -118,9 +118,9 @@ Examples:
 
 			if output_to_json {
 				output_json := map[string]interface{}{
-					"input":  input_template,
-					"values": base_map,
-					"result": replaced_data["result"],
+					"expression": input_template,
+					"values":     replacement_map,
+					"result":     replaced_data["result"],
 				}
 				output, err := json.Marshal(output_json)
 				if err != nil {
@@ -132,7 +132,7 @@ Examples:
 			cmd.Println(replaced_data["result"])
 		},
 	}
-	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
+	rootCmd.Flags().StringToStringVarP(&values, "value", "v", map[string]string{}, "Key value pairs of inputs")
 	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "Output as a JSON object")
 	rootCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Do not print messages to stderr")
 	rootCmd.Flags().StringVarP(&from_file, "from-file", "f", "", "Load parameters from a file")

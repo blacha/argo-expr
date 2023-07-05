@@ -43,7 +43,7 @@ Read a JSON input file and compute the output
 
 ```json 
 {
-    "input": "hello world 1+1:{{=1+1}} i:{{=i}}",
+    "expression": "hello world 1+1:{{=1+1}} i:{{=i}}",
     "values": {
         "i": "4"
     }

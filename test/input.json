@@ -1,6 +1,6 @@
 {
-    "input": "{{= input }}",
+    "template": "{{= inputs.parameters.message }}",
     "values": {
-        "input": "hello"
+        "inputs.parameters.message": "hello"
     }
 }

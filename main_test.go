@@ -43,12 +43,12 @@ func TestRunHello(t *testing.T) {
 
 	t.Run("should output as JSON", func(t *testing.T) {
 		_, output, _ := execCommand(create_command(), "{{= input }}", "--json", "--value", "input=hello")
-		assert.Equal(t, "{\"input\":\"{{= input }}\",\"result\":\"hello\",\"values\":{\"input\":\"hello\"}}\n", output)
+		assert.Equal(t, `{"expression":"{{= input }}","result":"hello","values":{"input":"hello"}}`+"\n", output)
 	})
 
 	t.Run("should hide warnings with --quiet as JSON", func(t *testing.T) {
 		_, output, _ := execCommand(create_command(), "{{= input }}", "--json", "--value", "input=hello")
-		assert.Equal(t, `{"input":"{{= input }}","result":"hello","values":{"input":"hello"}}`+"\n", output)
+		assert.Equal(t, `{"expression":"{{= input }}","result":"hello","values":{"input":"hello"}}`+"\n", output)
 	})
 
 	t.Run("should read from file", func(t *testing.T) {
@@ -57,17 +57,17 @@ func TestRunHello(t *testing.T) {
 	})
 
 	t.Run("should read from file allow value override", func(t *testing.T) {
-		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "--value", "input=🦄🌈")
+		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "--value", "inputs.parameters.message=🦄🌈")
 		assert.Equal(t, "🦄🌈\n", output)
 	})
 
 	t.Run("should read from file allow input override", func(t *testing.T) {
-		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= input + ' world'}}", "--quiet")
+		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= inputs.parameters.message + ' world'}}", "--quiet")
 		assert.Equal(t, "hello world\n", output)
 	})
 
 	t.Run("should log a warning when overriding input", func(t *testing.T) {
-		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= input + ' world'}}")
-		assert.Equal(t, "Replacing input value from:'{{= input }}' to:'{{= input + ' world'}}'\nhello world\n", output)
+		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= inputs.parameters.message + ' world'}}")
+		assert.Equal(t, "Replacing template from:'{{= inputs.parameters.message }}' to:'{{= inputs.parameters.message + ' world'}}'\nhello world\n", output)
 	})
 }
