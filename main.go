@@ -35,13 +35,12 @@ func init_version() {
 	Version = info.Main.Version
 }
 
-func main() {
+func create_command() *cobra.Command {
+
 	var var_map map[string]string
 	var from_file string
 	var output_to_json bool
 	var quiet bool
-
-	init_version()
 
 	rootCmd := &cobra.Command{
 		Use:     "argo-expr",
@@ -64,10 +63,6 @@ Examples:
 			// Preload the argo replacements
 			base_map := map[string]string{}
 			var input_template string
-
-			if from_file != "" && input_template != "" {
-				panic("Cannot use --from-file and input together")
-			}
 
 			if from_file != "" {
 				jsonFile, err := os.Open(from_file)
@@ -113,7 +108,7 @@ Examples:
 			// Replace the values in the template
 			s, err := template.Replace(string(template_json), base_map, false)
 			if err != nil {
-				fmt.Println(err.Error())
+				cmd.Println(err.Error())
 				os.Exit(1)
 			}
 
@@ -133,16 +128,22 @@ Examples:
 				if err != nil {
 					panic(err)
 				}
-				fmt.Println(string(output))
+				cmd.Println(string(output))
 				return
 			}
-			fmt.Println(replaced_data["result"])
+			cmd.Println(replaced_data["result"])
 		},
 	}
 	rootCmd.Flags().StringToStringVarP(&var_map, "value", "v", map[string]string{}, "Key value pairs")
 	rootCmd.Flags().BoolVar(&output_to_json, "json", false, "Output as a JSON object")
 	rootCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Do not print messages to stderr")
 	rootCmd.Flags().StringVarP(&from_file, "from-file", "f", "", "Load parameters from a file")
+	return rootCmd
+}
+
+func main() {
+	var rootCmd = create_command()
+	init_version()
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

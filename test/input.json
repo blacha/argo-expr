@@ -1,0 +1,6 @@
+{
+    "input": "{{= input }}",
+    "values": {
+        "input": "hello"
+    }
+}
