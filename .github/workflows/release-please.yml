@@ -31,11 +31,11 @@ jobs:
     needs: release_please
     if: ${{ needs.release_please.outputs.release_created }}
     strategy:
-        fail-fast: false
-        matrix:
-          include:
-            - target: x86_64-linux
-              os: ubuntu-latest
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-linux
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -46,18 +46,18 @@ jobs:
 
       - name: Build Binary
         run: |
-            go build \
-              -ldflags="-X main.Version=$(git describe --tags --always --match 'v*')" \
-              -o ${{ matrix.target }}/argo-expr
+          go build \
+            -ldflags="-X main.Version=$(git describe --tags --always --match 'v*')" \
+            -o ${{ matrix.target }}/argo-expr
 
       - name: Pacakge release
         run: |
-            cd ${{ matrix.target }}/
-            cp ../README.md .
-            cp ../CHANGELOG.md .
-            cp ../LICENSE .
-            tar czvf ../argo-expr-${{ matrix.target }}.tar.gz *
-            cd -
+          cd ${{ matrix.target }}/
+          cp ../README.md .
+          cp ../CHANGELOG.md .
+          cp ../LICENSE .
+          tar czvf ../argo-expr-${{ matrix.target }}.tar.gz *
+          cd -
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
