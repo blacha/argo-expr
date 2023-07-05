@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/blacha/argo-expr/compare/v1.1.1...v1.1.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* init version info before creating the command ([741dfc1](https://github.com/blacha/argo-expr/commit/741dfc13f8ac1d291a7db2122a28e16f877163bf))
+
 ## [1.1.1](https://github.com/blacha/argo-expr/compare/v1.1.0...v1.1.1) (2023-07-05)
 
 
