@@ -7,8 +7,9 @@ on:
 jobs:
   release_please:
     permissions:
-      contents: read
-      id-token: write
+      contents: write
+      pull-requests: write
+
     name: Release Please Pull Request
     runs-on: ubuntu-latest
     outputs:
