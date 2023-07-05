@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/blacha/argo-expr/compare/v1.1.2...v1.1.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* change wording to template ([3ae6be9](https://github.com/blacha/argo-expr/commit/3ae6be9531ce8ab8a8177c6829b7d071bcc1dc42))
+
 ## [1.1.2](https://github.com/blacha/argo-expr/compare/v1.1.1...v1.1.2) (2023-07-05)
 
 
