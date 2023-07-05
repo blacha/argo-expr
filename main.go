@@ -49,18 +49,15 @@ func main() {
 		Version: Version,
 		Long: `Testing argo expression expansions, useful for debugging work expressions without submitting a job to argo
 		
-  Examples:
+Examples:
 
-  Directly convert a input value from a template
+  Directly convert a input value from a template  
+  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" # hello world  
   
-  $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" # hello world
-
-  Using Sprig functions
-
-  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" hello world " # hello world
-
-  Convert input to a integer and use math
-
+  Using Sprig functions  
+  $ argo-expr "{{=sprig.trim(input.parameters.name)}}" --value input.parameters.name=" hello world " # hello world  
+ 
+  Convert input to a integer and use math  
   $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" # 2`,
 		Args: cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
