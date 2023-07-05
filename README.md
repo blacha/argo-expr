@@ -98,13 +98,13 @@ output
 hello world 1+1:2 i:2
 ```
 
-#### Input expression can be overriden
+#### Input expression can be overridden
 ```bash
-argo-expr --from-file ./input.json "i:{{=i+3}}"
+argo-expr --from-file ./input.json "i:{{=asInt(i)+3}}"
 ```
 
 output
 
 ```
-
+i:7
 ```
