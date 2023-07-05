@@ -140,8 +140,9 @@ Examples:
 }
 
 func main() {
-	var rootCmd = create_command()
 	init_version()
+
+	var rootCmd = create_command()
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
