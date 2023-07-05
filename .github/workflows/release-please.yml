@@ -46,7 +46,9 @@ jobs:
 
       - name: Build Binary
         run: |
-            go build -o ${{ matrix.target }}/argo-expr
+            go build \
+              -ldflags="-X main.Version=$(git describe --tags --always --match 'v*')" \
+              -o ${{ matrix.target }}/argo-expr
 
       - name: Pacakge release
         run: |

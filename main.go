@@ -16,16 +16,23 @@ type InputJson struct {
 	Values map[string]string `json:"values"`
 }
 
+var Version string
+
 func main() {
 	var var_map map[string]string
 	var from_file string
 	var output_to_json bool
 	var quiet bool
 
+	if Version == "" {
+		Version = "HEAD"
+	}
+
 	rootCmd := &cobra.Command{
-		Use:   "argo-expr",
-		Short: "Testing argo expressions",
-		Long:  ``,
+		Use:     "argo-expr",
+		Short:   "Testing argo expressions",
+		Version: Version,
+		Long:    ``,
 		Example: `  
   Directly convert a input value from a template
   
