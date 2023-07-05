@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime/debug"
 
 	"github.com/argoproj/argo-workflows/v3/util/template"
 	"github.com/spf13/cobra"
@@ -18,22 +19,38 @@ type InputJson struct {
 
 var Version string
 
+// Attempt to fill in the Version var if its not already filled in
+// CI fills it using `-ldflags="-X main.Version=$(git describe --tags --always --match 'v*')"`
+// doing a go install will use `debug.ReadBuildInfo`
+func init_version() {
+	if Version != "" {
+		return
+	}
+
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		Version = "unknown"
+		return
+	}
+	Version = info.Main.Version
+}
+
 func main() {
 	var var_map map[string]string
 	var from_file string
 	var output_to_json bool
 	var quiet bool
 
-	if Version == "" {
-		Version = "HEAD"
-	}
+	init_version()
 
 	rootCmd := &cobra.Command{
 		Use:     "argo-expr",
 		Short:   "Testing argo expressions",
 		Version: Version,
-		Long:    ``,
-		Example: `  
+		Long: `Testing argo expression expansions, useful for debugging work expressions without submitting a job to argo
+		
+  Examples:
+
   Directly convert a input value from a template
   
   $ argo-expr "{{=input.parameters.name}}" --value input.parameters.name="hello world" # hello world
@@ -44,9 +61,7 @@ func main() {
 
   Convert input to a integer and use math
 
-  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" # 2
-
-		`,
+  $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1" # 2`,
 		Args: cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			// Preload the argo replacements
