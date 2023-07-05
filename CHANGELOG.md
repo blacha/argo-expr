@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/blacha/argo-expr/compare/v1.1.0...v1.1.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* include version information when users go install ([7e8af34](https://github.com/blacha/argo-expr/commit/7e8af347174abc09bac68656bba95b5ecb5ccc43))
+
 ## [1.0.1](https://github.com/blacha/argo-expr/compare/v1.0.0...v1.0.1) (2023-07-05)
 
 
