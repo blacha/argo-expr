@@ -12,7 +12,9 @@ func execCommand(root *cobra.Command, args ...string) (c *cobra.Command, output 
 	out := new(bytes.Buffer)
 
 	root.SetOut(out)
+	root.SetErr(out)
 	root.SetArgs(args)
+
 	c, err = root.ExecuteC()
 
 	return c, out.String(), err
@@ -60,7 +62,12 @@ func TestRunHello(t *testing.T) {
 	})
 
 	t.Run("should read from file allow input override", func(t *testing.T) {
-		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= input + ' world'}}")
+		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= input + ' world'}}", "--quiet")
 		assert.Equal(t, "hello world\n", output)
+	})
+
+	t.Run("should log a warning when overriding input", func(t *testing.T) {
+		_, output, _ := execCommand(create_command(), "--from-file", "test/input.json", "{{= input + ' world'}}")
+		assert.Equal(t, "Replacing input value from:'{{= input }}' to:'{{= input + ' world'}}'\nhello world\n", output)
 	})
 }

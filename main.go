@@ -84,10 +84,8 @@ Examples:
 			}
 
 			if len(args) > 0 {
-				if input_template != "" {
-					if !quiet {
-						fmt.Fprintf(os.Stderr, "Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
-					}
+				if !quiet && input_template != "" {
+					cmd.PrintErrf("Replacing input value from:'%s' to:'%s'\n", input_template, args[0])
 				}
 				input_template = args[0]
 			}
