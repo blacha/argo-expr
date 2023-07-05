@@ -17,7 +17,7 @@ go install github.com/blacha/argo-expr@latest
 ### Add 1 to a number
 
 ```bash
-$ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.name="1"
+$ argo-expr "{{=asInt(inputs.parameters.name) + 1}}" --value inputs.parameters.name="1"
 2
 ```
 
@@ -27,7 +27,7 @@ $ argo-expr "{{=asInt(input.parameters.name) + 1}}" --value input.parameters.nam
 $ argo-expr '{{=sprig.sha256sum("hello world")}}'
 b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
 
-$ argo-expr '{{=sprig.sha256sum(input.value)}}' --value input.value="hello world"
+$ argo-expr '{{=sprig.sha256sum(inputs.parameters.value)}}' --value inputs.parameters.value="hello world"
 b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
 ```
 
@@ -37,9 +37,9 @@ Read a JSON input file and compute the output
 
 ```json
 {
-  "expression": "hello world 1+1:{{=1+1}} i:{{=i}}",
+  "template": "hello world 1+1:{{= 1+1 }} i:{{= inputs.parameters.number }}",
   "values": {
-    "i": "4"
+    "inputs.parameters.number": "4"
   }
 }
 ```
@@ -52,14 +52,14 @@ hello world 1+1:2 i:4
 Both values and the expression from the file can be overridden with `--value` or expression.
 
 ```
-$ argo-expr --from-file ./input.json --value i=1
+$ argo-expr --from-file ./input.json --value inputs.parameters.number=1
 hello world 1+1:2 i:2
 ```
 
 Override input expression
 
 ```
-$ argo-expr --from-file ./input.json "i:{{=asInt(i)+3}}"
+$ argo-expr --from-file ./input.json "i:{{=asInt(inputs.parameters.number)+3}}"
 i:7
 ```
 

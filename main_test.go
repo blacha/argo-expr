@@ -43,12 +43,12 @@ func TestRunHello(t *testing.T) {
 
 	t.Run("should output as JSON", func(t *testing.T) {
 		_, output, _ := execCommand(create_command(), "{{= input }}", "--json", "--value", "input=hello")
-		assert.Equal(t, `{"expression":"{{= input }}","result":"hello","values":{"input":"hello"}}`+"\n", output)
+		assert.Equal(t, `{"result":"hello","template":"{{= input }}","values":{"input":"hello"}}`+"\n", output)
 	})
 
 	t.Run("should hide warnings with --quiet as JSON", func(t *testing.T) {
 		_, output, _ := execCommand(create_command(), "{{= input }}", "--json", "--value", "input=hello")
-		assert.Equal(t, `{"expression":"{{= input }}","result":"hello","values":{"input":"hello"}}`+"\n", output)
+		assert.Equal(t, `{"result":"hello","template":"{{= input }}","values":{"input":"hello"}}`+"\n", output)
 	})
 
 	t.Run("should read from file", func(t *testing.T) {

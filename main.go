@@ -118,9 +118,9 @@ Examples:
 
 			if output_to_json {
 				output_json := map[string]interface{}{
-					"expression": input_template,
-					"values":     replacement_map,
-					"result":     replaced_data["result"],
+					"template": input_template,
+					"values":   replacement_map,
+					"result":   replaced_data["result"],
 				}
 				output, err := json.Marshal(output_json)
 				if err != nil {
