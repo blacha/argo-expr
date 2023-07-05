@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/blacha/argo-expr/compare/v1.0.0...v1.0.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* add license ([fa48810](https://github.com/blacha/argo-expr/commit/fa488105b5188ffb69a778228b901ddaacde0aa2))
+
 ## 1.0.0 (2023-07-05)
 
 
